@@ -4,7 +4,7 @@ import ml.smart_tictactoe.player.Player;
 
 public class Board {
 
-	private static int ROW = 3;
+	private static int ROW = 5;
 	static int COL = ROW;
 	private static char mat[][] = new char[getROW()][COL];
 	private static String option;
@@ -87,7 +87,7 @@ public class Board {
 
 	void won( int x, int i )
 	{
-		if( x == getROW() - 1 )
+		if( x == 2 )
 		{
 			if( getMat()[i][i] == 'O' )
 				System.out.println(Player.getPlayer1() + " won!!! Congrats!!");
