@@ -14,6 +14,7 @@ class AI extends Player{
 	def error : Unit = println("AI Error");
 	
 	def getInput:Array[Int] = {
+	  if(main.debug) println("AI Chance");
 	  var choice = new Array[Int](2);
 	  var iterator = QSet.iterator;
 	  var foundState = false;
@@ -21,8 +22,6 @@ class AI extends Player{
 	    var bState = iterator.next;
 	    if(bState.state.equals(main.boardState)){
 	      foundState = true;
-	      println(bState.action.charAt(0));
-	      println(bState.action.charAt(1));
 	      choice(0) = Character.getNumericValue(bState.action.charAt(0));
 	      choice(1) = Character.getNumericValue(bState.action.charAt(1)); 
 	       return choice;

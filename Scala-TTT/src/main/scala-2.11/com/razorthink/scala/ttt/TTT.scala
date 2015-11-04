@@ -1,19 +1,17 @@
 package com.razorthink.scala.ttt
 
 import java.util.HashSet
-
+import com.razorthink.scala.player.Comp
+import com.razorthink.scala.player.Player1
+import com.razorthink.scala.resources.BoardState
+import com.razorthink.ttt.board.Board
+import breeze.linalg.DenseMatrix
+import com.razorthink.scala.player.Player
 import com.razorthink.scala.player.AI
 import com.razorthink.scala.player.Comp
-import com.razorthink.scala.player.Player
-import com.razorthink.scala.player.Player1
-import com.razorthink.scala.player.Player2
-import com.razorthink.scala.resources.BoardState
-import com.razorthink.scala.resources.BoardState
-import com.razorthink.scala.resources.BoardState
 import com.razorthink.scala.resources.Resources
-import com.razorthink.ttt.board.Board
+import com.razorthink.scala.player.IntelliComp
 
-import breeze.linalg.DenseMatrix
 
 object TTT {
 
@@ -22,31 +20,32 @@ object TTT {
 	private final var player1Symbol = 0;
 	private final var player2Symbol = 1;
 	private final var defaultSymbol = 9;
-	final var epoch = 5;
-	final var isTraining = true;
-	final var debug = isTraining;
-
-
-
-
-	val QSet = new HashSet[BoardState]();
+	final var epoch = 100;
+	final var isTraining = false;
+	final var debug = !isTraining;
+	var board =new Board(ROW, COL);
+	var QSet = new HashSet[BoardState]();
 
 	def getROW : Int = return ROW;
 	def getCol : Int = return COL;
 	def getDefaultSymbol : Int = return defaultSymbol;
 
-	final var player1 = new Comp("Comp1 Playing");
-	final var player2 = new Comp("Comp2 Playing");
-	
+	var player1 = new Player1("Comp1 Playing");
+	var player2 = new IntelliComp;
+
+	//var player1 = new Comp("Comp1");
+	//var player2 = new Comp("Comp2");
+
 	var boardState = "";
 
-	var board = new Board(ROW, COL);
 
-	def play(playerOne : Player, playerTwo: Player){		
-		board.MATRIX = new DenseMatrix[Int](ROW,COL);
+
+	@scala.annotation.tailrec
+	def play{
+
+		//board.MATRIX = new DenseMatrix[Int](ROW,COL);
 		board.initBoard	
-		val player1 = playerOne;
-		val player2 = playerTwo;
+
 		var chance=0;
 		while(chance < ROW*COL){
 			boardState = board.MATRIX.toString().replace(" ", "").replace("\n","");
@@ -77,29 +76,43 @@ object TTT {
 			chance+=1;
 			if(debug)
 				board.printBoard;
-			var state = BoardState(boardState,action,board.getReward);
-			QSet.add(state);
-			
+			if(isTraining){
+				if(board.getReward > 0){
+					var state = BoardState(boardState,action,board.getReward);
+					QSet.add(state);
+				}
+				else if(board.getReward < 0){
+					val currentSet = QSet;
+					var iterator = QSet.iterator;
+					while(iterator.hasNext()){
+
+						if(iterator.next().state.equals(boardState))
+							iterator.remove()
+					}
+				}
+			}
+
 		}
 		board.draw+=1;
-		
+
+		if(isTraining && epoch > 0){
+			epoch-=1;
+			play
+		}
+		else{
+			val exit =new Resources;
+			exit.exitGame;
+		}
+
 	}
 
 
 	def main(args: Array[String]): Unit = {
 			println("Welcome to Tic Tac Toe");
 			if(debug)
-				board.printBoard;			
-			
-			
-			
-			
-			if(isTraining)
-			  play(new Comp("Player 1"), new Comp("Player 2"))
-			 else
-			   play(new Player1("King"), new Comp("Player 2"))
-	
-	
+				board.printBoard;
+			play
+
 	}
 
 

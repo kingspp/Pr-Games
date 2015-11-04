@@ -27,17 +27,17 @@ class Board (ROW: Int, COL: Int) {
 	var epochCount=0;
 	val print = new Print();
 
-	
+
 	def getFreeCells: ArrayList[String] = {
-	  var id=0;
-	  var r=0; var c=0;
-	  var result = new ArrayList[String];
-	  for(r <- 0 to main.getROW -1)
-	    for(c <- 0 to main.getCol -1)
-	      if(MATRIX.valueAt(r, c) == main.getDefaultSymbol){
-	        result.add(r.toString+c.toString)
-	      }
-	  return result;	  
+		var id=0;
+		var r=0; var c=0;
+		var result = new ArrayList[String];
+		for(r <- 0 to main.getROW -1)
+			for(c <- 0 to main.getCol -1)
+				if(MATRIX.valueAt(r, c) == main.getDefaultSymbol){
+					result.add(r.toString+c.toString)
+				}
+		return result;	  
 	}
 
 	def initBoard{
@@ -64,26 +64,26 @@ class Board (ROW: Int, COL: Int) {
 			if(data.charAt(i) == data.charAt(i+1) && data.charAt(i) != ('0'+main.getDefaultSymbol)){
 				count+=1;
 				if(count==2){
-					if(data.charAt(0) == '0'){
-					  if(main.debug)
-						  println("Player 1  won");
-					  player1WinCount+=1;
+					if(data.charAt(i) == '0'){
+						if(main.debug)
+							println("Player 1  won");
+						player1WinCount+=1;
 						reward = 100;
+
 					}
-					else{
-					  if(main.debug)
-						  println("Player 2 won");
-					  player2WinCount+=1;
+					else if(data.charAt(i) == '1'){
+						if(main.debug)
+							println("Player 2 won");
+						player2WinCount+=1;
 						reward = -100;
 					}
-					if(main.isTraining && main.epoch > 0){
-						//main.play(new Comp("Player 1"), new Comp("Player 2"))
-						main.epoch-=1;
-					}
 					else{
-					 val exit =new Resources;
-					 exit.exitGame;
+						if(main.debug)
+							println("It is a Draw");
 					}
+
+					if(!main.isTraining)
+						System.exit(0);
 				}
 			}
 			i+=1;

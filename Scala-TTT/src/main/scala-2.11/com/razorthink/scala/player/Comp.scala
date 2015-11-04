@@ -9,9 +9,8 @@ import com.razorthink.scala.resources.Resources
 
 class Comp (compName : String) extends Player  {
 
-	val main = TTT;
-	val board=main.board;
-	var maxPossErrors = 100;
+	var main = TTT;
+	var board =  main.board;
 	var rand = new Random();
 	val print = new Print;
 	playerName = compName;
